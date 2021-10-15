@@ -202,14 +202,12 @@ public class CustomerOrders {
 
    /**
     * Think of this as a simple map from a String to an instance of Products that has the
-    * same name, as the string that you pass in.  To create a new Cars instance, you need to pass
-    * in an instance of Products to satisfy the foreign key constraint, not just a string
-    * representing the name of the style.
+    * same name, as the string that you pass in.
     * @param UPC        The name of the product that you are looking for.
     * @return           The Products instance corresponding to that UPC.
     */
    public Products getProduct (String UPC) {
-      // Run the native query that we defined in the Products entity to find the right style.
+      // Run the native query that we defined in the Products entity to find the right product.
       List<Products> products = this.entityManager.createNamedQuery("ReturnProduct",
               Products.class).setParameter(1, UPC).getResultList();
       if (products.size() == 0) {
@@ -219,5 +217,23 @@ public class CustomerOrders {
          // Return the style object that they asked for.
          return products.get(0);
       }
-   }// End of the getStyle method
+   }// End of the getProduct method
+   
+   /** A map from a String to an instance of Customer that has the
+     * same id, as the string that you pass in. 
+     * @param id        The id of the customer that you are looking for.
+     * @return           The Customer instance corresponding to that id.
+     */
+   public Customers getCustomer (String id) {
+      // Run the native query that we defined in the Customers entity to find the right customer.
+      List<Customers> customers = this.entityManager.createNamedQuery("ReturnCustomer",
+              Customers.class).setParameter(1, id).getResultList();
+      if (customers.size() == 0) {
+         // Invalid style name passed in.
+         return null;
+      } else {
+         // Return the style object that they asked for.
+         return customers.get(0);
+      }
+   }
 } // End of CustomerOrders class
