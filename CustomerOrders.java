@@ -22,6 +22,7 @@ import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Scanner;
 
 /**
  * A simple application to demonstrate how to persist an object in JPA.
@@ -65,6 +66,32 @@ public class CustomerOrders {
     */
    public CustomerOrders(EntityManager manager) {
       this.entityManager = manager;
+   }
+
+   /** Checks if the inputted value is an integer and
+	 * within the specified range (ex: 1-10)
+	 * @param low lower bound of the range.
+     * @param high upper bound of the range.
+     * @return the valid input.
+	 */
+   public static int getIntRange( int low, int high ) {
+      Scanner in = new Scanner( System.in );
+      int input = 0;
+      boolean valid = false;
+      while( !valid ) {
+         if( in.hasNextInt() ) {
+            input = in.nextInt();
+            if( input <= high && input >= low ) {
+               valid = true;
+            } else {
+               System.out.println( "Invalid Range." );
+            }
+         } else {
+            in.next(); //clear invalid string
+            System.out.println( "Invalid Input." );
+         }
+      }
+      return input;
    }
 
    public static void main(String[] args) {
@@ -111,9 +138,44 @@ public class CustomerOrders {
       customers.add(new Customers("Suarez", "Cody", "Lawn Route", "64521", "812-913-6880"));
       // Create the list of customers in the database.
       customerOrders.createEntity (customers);
-      // Commit the changes so that the new data persists and is visible to other users.
       tx.commit();
       LOGGER.fine("End of Transaction");
+
+      // Ask the users if they want to make an order.
+      Scanner sc = new Scanner(System.in);
+      System.out.println();
+      System.out.println("--------------------Make Order---------------");
+      System.out.println("Enter choice: ");
+      System.out.println("1. Make an order.");
+      System.out.println("2. Cancel.");
+      int choice = sc.nextInt();
+      //If yes, display list of available Customers and have them pick
+      while (choice == 1) {
+         System.out.println("Choose a Customer: ");
+         for (int i = 0; i < customers.size(); i ++) {
+            System.out.println((i+1) + ". " + customers.get(i).toString());
+         }
+         int cus = getIntRange(1,customers.size());
+         // Ask users for the number of products and display the list of valid products and have them pick
+         System.out.println("How many products? ");
+         int quant = sc.nextInt();
+         for (int j = 0; j<quant; j ++) {
+            System.out.println("Choose a Product: ");
+            for (int n = 0; n < products.size(); n ++) {
+               System.out.println((n+1) + ". " + products.get(n));
+            }
+            int prod = getIntRange(1, products.size());
+         }
+
+         System.out.println("Enter choice: ");
+         System.out.println("1. Make an order.");
+         System.out.println("2. Cancel.");
+         choice = sc.nextInt();
+      }
+
+      // Commit the changes so that the new data persists and is visible to other users.
+      //tx.commit();
+      //LOGGER.fine("End of Transaction");
 
    } // End of the main method
 
