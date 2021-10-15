@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Entity
 @NamedNativeQuery(
-        name="ReturnProduct",
+        name="ReturnCustomer",
         query = "SELECT * " +
                 "FROM   Customers " +
                 "WHERE  customer_id = ? ",
